@@ -82,8 +82,8 @@ const BoardView = () => {
   useEffect(() => {
     fetchBoardData();
 
-    // Connect directly to backend to avoid proxy abort errors
-    const socketUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : '/';
+    // Connect directly to backend or configured VITE_API_URL
+    const socketUrl = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:5000' : '/');
     const socket = io(socketUrl);
     socketRef.current = socket;
 
