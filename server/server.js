@@ -66,10 +66,22 @@ const PORT = process.env.PORT || 5000;
 
 connectDB();
 
+const startKeepAwake = require('./utils/keepAwake');
+
 // Only listen if run directly (avoids port collisions during Jest tests)
 if (require.main === module) {
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+
+    // Self-ping to prevent Render free instance from sleeping
+    if (
+      process.env.NODE_ENV === 'production' ||
+      process.env.RENDER ||
+      process.env.RENDER_EXTERNAL_URL ||
+      process.env.ENABLE_KEEP_AWAKE === 'true'
+    ) {
+      startKeepAwake(process.env.RENDER_EXTERNAL_URL || 'https://syncboard-ve0c.onrender.com', 10);
+    }
   });
 }
 
